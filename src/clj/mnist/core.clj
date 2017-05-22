@@ -1,7 +1,7 @@
-(ns clj.mnist.core
+(ns mnist.core
   (:gen-class)
   (:require 
-    [clj.data-load.core :as data-load]
+    [data-load.core :as data-load]
     [clojure.math.numeric-tower :as math]
     [clojure.core.matrix.random :as clj-mtrx-rnm]
     [clojure.core.matrix :as clj-mtrx]))

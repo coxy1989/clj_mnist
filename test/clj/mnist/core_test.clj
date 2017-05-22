@@ -1,9 +1,9 @@
-(ns clj.mnist.core-test
+(ns mnist.core-test
   (:require 
     [clojure.test :refer :all]
     [clojure.core.matrix :as clj-mtrx]
     [clojure.core.matrix.random :as clj-mtrx-rnm]
-    [clj.mnist.core :refer :all]))
+    [mnist.core :refer :all]))
 
 (deftest test-inner-product 
   (testing "integration test - clj-mtrx/inner-product"
