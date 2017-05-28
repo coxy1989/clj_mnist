@@ -28,7 +28,8 @@
       {::previous previous 
        ::latest latest}))
 
-(rum/defcs component < (rum/local {} ::drawing) {:did-update did-update} [state]
+
+(defn canvas-element [state]
   [:canvas {:ref "canvas"
             :width 280
             :height 280
@@ -37,5 +38,14 @@
             :on-mouse-up #(swap! (::drawing state) assoc :mouse-down false)
             :on-mouse-move #(swap! (::drawing state) merge (state-patch state %1 %2))}])
 
-;; Handy Snippet
-;;(.log js/console (.getImageData context 0 0 200 200))
+(defn evaluate [state]
+  (let [drawing @(::drawing state)
+        canvas (aget (:rum/react-component state) "refs" "canvas")
+        context (.getContext canvas "2d")]
+    (.log js/console (.getImageData context 0 0 280 280)) 
+  ))
+
+(rum/defcs component < (rum/local {} ::drawing) {:did-update did-update} [state]
+  [:div 
+   (canvas-element state)
+   [:button {:on-click #(evaluate state)} "Evaluate"]])
