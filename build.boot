@@ -2,6 +2,7 @@
           :source-paths   #{"src/clj" "src/cljs"}
           :dependencies   '[[org.clojure/clojure "1.7.0"]
                             [adzerk/boot-cljs "1.7.228-2"]
+                            [rum "0.10.8"]
                             [pandeiro/boot-http "0.7.0"]
                             [adzerk/boot-reload "0.5.1"]
                             [adzerk/boot-test "RELEASE" :scope "test"]
@@ -32,6 +33,7 @@
 	      (reload)))
 
 (deftask webx []
+   (merge-env! :source-paths #{"dev"})
    (comp (interactive)
          (cljs :source-map true)
          (target :dir #{"target"})))
