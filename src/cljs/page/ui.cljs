@@ -31,9 +31,10 @@
 
 (defn canvas-element [state]
   [:canvas {:ref "canvas"
-            :width 280
-            :height 280
-            :style {:cursor "crosshair" :background-color "blue" }
+            :width 28
+            :height 28
+            :style {:cursor "crosshair"
+                    :background-color "blue"}
             :on-mouse-down #(swap! (::drawing state) merge {:mouse-down true} (state-patch state %1 %2))
             :on-mouse-up #(swap! (::drawing state) assoc :mouse-down false)
             :on-mouse-move #(swap! (::drawing state) merge (state-patch state %1 %2))}])
@@ -41,11 +42,14 @@
 (defn evaluate [state]
   (let [drawing @(::drawing state)
         canvas (aget (:rum/react-component state) "refs" "canvas")
-        context (.getContext canvas "2d")]
-    (.log js/console (.getImageData context 0 0 280 280)) 
-  ))
+        context (.getContext canvas "2d")
+        data (.-data (.getImageData context 0 0 28 28))
+        alpha-vec (take-nth 4 (drop 3 (.from js/Array data)))
+        norm-alpha-vec (for [pix alpha-vec] (/ pix 255))]
+    (.log js/console (clj->js norm-alpha-vec))))
 
 (rum/defcs component < (rum/local {} ::drawing) {:did-update did-update} [state]
   [:div 
    (canvas-element state)
    [:button {:on-click #(evaluate state)} "Evaluate"]])
+
