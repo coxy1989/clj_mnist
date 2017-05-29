@@ -1,4 +1,4 @@
-(ns page.ui
+(ns components.canvas.ui
   (:require
     [util.draw.core :as draw-util]
     [cljs.core.async :as async]

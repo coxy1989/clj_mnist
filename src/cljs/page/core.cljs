@@ -3,30 +3,34 @@
     [macros.go-loop-let.core :refer [go-loop-let-recur go-loop-let]]
     [cljs.core.async.macros :refer [go go-loop]])    
   (:require
-    [page.ui :as ui]
-    [ajax.core :as ajax]
+    [components.canvas.ui :as canvas-ui]
+    [components.results.ui :as results-ui]    
     [feedforward.core :as ff]
+    [ajax.core :as ajax]
     [rum.core :as rum]
     [cljs.core.async :as async]))
   
-(defn process-pixel-vector-chan [net pixel-vector-chan]
-  (go-loop-let-recur [pixel-vector (<! pixel-vector-chan)] (->> (ff/feedforward-n net pixel-vector [])
-                                                                last
-                                                                :a
-                                                                (map-indexed vector)
-                                                                (sort-by second)
-                                                                reverse
-                                                                (clj->js)
-                                                                (.log js/console))))
+(rum/defc page [canvas results]
+  [:div canvas results])
 
-(defn get-net [chan]
-  (ajax/GET "/net.json" :keywords? true :response-format :json :handler (fn [net] (async/put! chan net))))
+(defn process-pixel-vector [results-atom net pixel-vector]
+  (->> (ff/feedforward-n net pixel-vector [])
+       last
+       :a
+       (map-indexed vector)
+       (sort-by second)
+       reverse
+       (reset! results-atom)))
+
+(defn process-get-net-chan [net-chan dom-id]
+  (go-loop-let [net (<! net-chan)] (let [element (.getElementById js/document dom-id)
+                                         results-atom (atom [])
+                                         pixel-vector-chan (async/chan)]
+                                     (go-loop-let-recur [pixel-vector (<! pixel-vector-chan)] (process-pixel-vector results-atom net pixel-vector))
+                                     (rum/mount (page (canvas-ui/component pixel-vector-chan) (results-ui/component results-atom)) element))))
 
 (defn ^:export inject [dom-id]  
-  (let [element (.getElementById js/document dom-id)
-        net-chan (async/chan)
-        pixel-vector-chan (async/chan)]
-    (get-net net-chan)
-    (go-loop-let [net (<! net-chan)] (do (process-pixel-vector-chan net pixel-vector-chan)
-                                         (rum/mount (ui/component pixel-vector-chan) element)))))
+  (let [net-chan (async/chan)]
+    (ajax/GET "/net.json" :keywords? true :response-format :json :handler (fn [net] (async/put! net-chan net)))
+    (process-get-net-chan net-chan dom-id)))
 
