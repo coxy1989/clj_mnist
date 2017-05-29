@@ -1,5 +1,6 @@
 (ns page.ui
   (:require
+    [feedforward.core :as ff]
     [rum.core :as rum]))
   
 (defn should-draw? [state]
@@ -46,7 +47,15 @@
         data (.-data (.getImageData context 0 0 28 28))
         alpha-vec (take-nth 4 (drop 3 (.from js/Array data)))
         norm-alpha-vec (for [pix alpha-vec] (/ pix 255))]
-    (.log js/console (clj->js norm-alpha-vec))))
+
+    (.log js/console (clj->js norm-alpha-vec))
+    (let [t-net (ff/gen-net [784 30 10])]
+      (->> (ff/feedforward-n t-net norm-alpha-vec [])
+           (clj->js)
+           (.log js/console))
+      )
+    ;;(.log js/console (clj->js norm-alpha-vec))
+    ))
 
 (rum/defcs component < (rum/local {} ::drawing) {:did-update did-update} [state]
   [:div 

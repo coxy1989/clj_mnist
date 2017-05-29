@@ -1,5 +1,5 @@
 (set-env! :resource-paths #{"html" }
-          :source-paths   #{"src/clj" "src/cljs"}
+          :source-paths   #{"src/clj" "src/cljs" "src/cljc"}
           :dependencies   '[[org.clojure/clojure "1.7.0"]
                             [adzerk/boot-cljs "1.7.228-2"]
                             [rum "0.10.8"]
