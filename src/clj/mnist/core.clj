@@ -2,6 +2,7 @@
   (:gen-class)
   (:require 
     [data-load.core :as data-load]
+    [data-write.core :as data-write]
     [clojure.math.numeric-tower :as math]
     [clojure.core.matrix.random :as clj-mtrx-rnm]
     [clojure.core.matrix :as clj-mtrx]))
@@ -213,10 +214,15 @@
     (println "Evaluating Start Accuracy")
     (println (str "Correct: " (evaluate net test-data) " / " (count test-data)))    
     (println (str "---------------"))    
-    (run-epochs net epochs training-data test-data)))
+    (-> (run-epochs net epochs training-data test-data)
+        (data-write/write-to-json "netx.json")
+      )
+    ))
 
 (defn -main
   "Entry point"
   [& args]
-  (run))
+  (run)
+  ;;(data-write/write-to-json (gen-net [784 30 10]) "example.json")
+  )
 

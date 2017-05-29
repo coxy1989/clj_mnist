@@ -1,6 +1,5 @@
 (ns feedforward.core
   (:require 
-    [clojure.core.matrix.random :as clj-mtrx-rnm]    
     [clojure.core.matrix :as clj-mtrx]))
 
 (defn pow [base exp]
@@ -41,23 +40,4 @@
     (let [{:keys [w b]} (first layers-seq)
           {:keys [z a] :as ff} (feedforward-1 w activations b)]
       (feedforward-n (drop 1 layers-seq) a (conj roll ff)))))
-
-;; Temmp
-
-(defn gen-layer [m n]
-  "Return a map of the form {:w [[]] :b [[]]} where:
-   `w` maps to a matrix of shape (m, n)
-   `b` maps to a vector of length m"
-  {:w (clj-mtrx-rnm/sample-normal [m n])
-   :b (clj-mtrx-rnm/sample-normal m)})
-
-(defn gen-net [layer-size-seq]
-  "Return a seq of maps of the form returned by `gen-layer`
-   Considers first item in `layer-size-seq` as the net's input layer
-  `layer-size-seq` - vector of integers where the first entry represents the number of inputs to the net, subsequent
-                     entries represent the number of neurons in the layer at that entry's index"
- (let [t (drop-last layer-size-seq)
-       b (drop 1 layer-size-seq)
-       z (map vector t b)]
-   (for [[n m] z] (gen-layer m n))))
 
