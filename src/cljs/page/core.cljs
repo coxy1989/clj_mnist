@@ -1,6 +1,5 @@
 (ns page.core
   (:require-macros 
-    [macros.go-loop-let.core :refer [go-loop-let-recur go-loop-let]]
     [cljs.core.async.macros :refer [go go-loop]])    
   (:require
     [components.canvas.ui :as canvas-ui]
@@ -23,11 +22,11 @@
        (reset! results-atom)))
 
 (defn process-get-net-chan [net-chan dom-id]
-  (go-loop-let [net (<! net-chan)] (let [element (.getElementById js/document dom-id)
-                                         results-atom (atom [])
-                                         pixel-vector-chan (async/chan)]
-                                     (go-loop-let-recur [pixel-vector (<! pixel-vector-chan)] (process-pixel-vector results-atom net pixel-vector))
-                                     (rum/mount (page (canvas-ui/component pixel-vector-chan) (results-ui/component results-atom)) element))))
+  (go-loop [] (let [net (<! net-chan)] (let [element (.getElementById js/document dom-id)
+                                             results-atom (atom [])
+                                             pixel-vector-chan (async/chan)]
+                                         (go-loop [] (let [pixel-vector (<! pixel-vector-chan)] (process-pixel-vector results-atom net pixel-vector)) (recur))
+                                         (rum/mount (page (canvas-ui/component pixel-vector-chan) (results-ui/component results-atom)) element)))))
 
 (defn ^:export inject [dom-id]  
   (let [net-chan (async/chan)]

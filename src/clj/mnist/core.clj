@@ -3,6 +3,7 @@
   (:require 
     [data-load.core :as data-load]
     [data-write.core :as data-write]
+    [clojure.java.io :as io]    
     [clojure.math.numeric-tower :as math]
     [clojure.core.matrix.random :as clj-mtrx-rnm]
     [clojure.core.matrix :as clj-mtrx]))
@@ -193,7 +194,7 @@
 (defn run-epochs [net epoch-number training-data test-data]
   (if (= 0 epoch-number)
     net
-  (let [batch-size 10 
+  (let [batch-size 100 
         learning-rate 3
         batches (partition batch-size (shuffle training-data))
         batch-learning-rate (/ learning-rate batch-size)
@@ -204,9 +205,8 @@
     (println (str "---------------"))    
     (run-epochs next-net (- epoch-number 1) training-data test-data))))
 
-(defn run []
-  (let [[training-data test-data] (data-load/training-data)
-        epochs 30
+(defn run [training-data test-data]
+  (let [epochs 30
         net (gen-net [784 30 10])]
     (println "Starting Run")
     (println (str "Length of training data: " (count training-data)))
@@ -222,7 +222,10 @@
 (defn -main
   "Entry point"
   [& args]
-  (run)
+  ;;(run)
   ;;(data-write/write-to-json (gen-net [784 30 10]) "example.json")
-  )
+  (with-open [reader (io/reader "worker_resources/train.csv")]
+   (let [[training-data test-data] (data-load/training-data reader 40000)]
+     (run training-data test-data)
+     )))
 
