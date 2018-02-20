@@ -1,0 +1,55 @@
+
+#top-level-container {
+  font-family: "Courier New";
+  font-size: 14px;
+  font-style: normal;
+  font-variant: normal;
+}
+
+#canvas-cont {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+}
+
+#canvas {
+  margin-right: 12px;
+  cursor: crosshair;
+  background-color: white;
+  color: black;
+  border: 0.25px solid black;
+  border-radius:4px;
+}
+
+#go-button {
+  display: block;
+  border-radius:20px;
+  border-color:black;
+  color: white;
+  background-color:black;
+  outline: none;
+}
+
+#results-cont {
+  padding-top: 12px;
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+}
+
+table {
+  text-align: left;
+  border:  0.25px solid black;
+  border-collapse: collapse;
+}
+
+td {
+  border:  0.25px solid black;
+  padding: 0 8px 0 8px;
+}
+
+th {
+  border:  0.25px solid black;
+  padding: 0 8px 0 8px;
+}
+
