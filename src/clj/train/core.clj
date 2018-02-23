@@ -279,7 +279,7 @@
     (println (str "Correct: " (evaluate net test-data) " / " (count test-data)))
     (println (str "---------------"))
     (-> (run-epochs net epochs training-data test-data)
-        (write-to-json "netx.json"))))
+        (write-to-json "network.json"))))
 
 (defn -main
   "Entry point"
