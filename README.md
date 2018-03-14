@@ -2,6 +2,9 @@
 
 MNIST handwritten digit classification with clojure.
 
+
+[Train](https://github.com/coxy1989/clj_mnist/blob/master/src/clj/train/core.clj) a neural network with a [boot task](https://github.com/coxy1989/clj_mnist/blob/master/build.boot), draw digits in a [single page application](https://github.com/coxy1989/clj_mnist/blob/master/src/cljs/app/core.cljs) and classify them in the web browser using [the same code](https://github.com/coxy1989/clj_mnist/blob/master/src/cljc/feedforward/core.cljc) from the feedforward pass in the training process.
+
 ## Walkthrough
 
 1. Train a network with `boot train`
